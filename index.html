@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>%VITE_SITE_NAME%</title> 
+    <meta name="description" content="%VITE_OG_DESCRIPTION%">
+     <link rel="alternate" type="application/rss+xml" :title="`${VITE_SITE_NAME} RSS Feed`" href="/rss.xml">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="canonical" href="%VITE_SITE_URL%/">
+
+    <meta property="og:type" content="website"> 
+    <meta property="og:title" content="%VITE_OG_TITLE%"> 
+    <meta property="og:description" content="%VITE_OG_DESCRIPTION%">
+    <meta property="og:image" content="%VITE_SITE_URL%/logo.png"> 
+    <meta property="og:url" content="%VITE_SITE_URL%/">
+    <meta property="og:site_name" content="%VITE_SITE_NAME%">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="%VITE_OG_TITLE%">
+    <meta name="twitter:description" content="%VITE_OG_DESCRIPTION%">
+    <meta name="twitter:image" content="%VITE_SITE_URL%/logo.png">
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <!-- === AWAL OPTIMASI FONT (NON-BLOCKING) === -->
+    <!-- 1. Percepat koneksi ke domain Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- 2. Muat CSS font dengan prioritas tinggi, tetapi JANGAN blokir rendering -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- 3. Fallback untuk browser yang tidak menjalankan JavaScript -->
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
+    <!-- === AKHIR OPTIMASI FONT === -->
+
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
