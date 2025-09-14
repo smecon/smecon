@@ -36,8 +36,28 @@
               <p>{{ item.answer }}</p>
             </div>
           </div>
+          <div v-if="articleData.tags && articleData.tags.length > 0" class="tags-section">
+            <h3 class="section-title">Tags</h3>
+            <div class="tags-container">
+              <span v-for="tag in articleData.tags" :key="tag" class="tag-item">{{ tag }}</span>
+            </div>
+          </div>
           <SocialShare :title="articleData.term || articleData.title" />
         </div>
+
+        <div v-if="relatedPosts.length > 0" class="related-posts-section">
+          <h2 class="section-title">Related Post</h2>
+          <div class="related-posts-grid">
+            <RelatedPostCard
+              v-for="post in relatedPosts"
+              :key="post.slug"
+              :title="post.term || post.title"
+              :slug="post.slug"
+              :image-url="post.imageUrl"
+            />
+          </div>
+        </div>
+
         <ArticlePagination :prev="pagination.prev" :next="pagination.next" />
       </main>
       <aside class="sidebar-wrapper">
@@ -62,6 +82,7 @@ import ArticlePagination from '@/components/blog/ArticlePagination.vue';
 import Breadcrumbs from '@/components/blog/Breadcrumbs.vue';
 import TableOfContents from '@/components/blog/TableOfContents.vue';
 import AdRenderer from '@/components/ads/AdRenderer.vue';
+import RelatedPostCard from '@/components/ui/RelatedPostCard.vue';
 import { adSlots } from '@/adConfig.js';
 import { useArticles } from '@/composables/useArticles.js';
 
@@ -113,6 +134,13 @@ const pagination = computed(() => {
     : null;
     
   return { prev, next };
+});
+
+const relatedPosts = computed(() => {
+  if (!articleData.value) return [];
+  return sortedPublishedPosts.value
+    .filter(post => post.categorySlug === articleData.value.categorySlug && post.slug !== articleData.value.slug)
+    .slice(0, 6);
 });
 
 const mainContentMarkdown = computed(() => {
@@ -231,4 +259,46 @@ useHead(() => {
 .pros-cons-section, .faq-section { margin-top: var(--spacing-lg); border-top: 1px solid var(--border-color); padding-top: var(--spacing-md); }
 .pros-cons-item, .faq-item { margin-bottom: 1.5rem; }
 .pros-cons-item h3, .faq-item h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+
+.section-title {
+  font-size: 1.75rem;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tags-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.tag-item {
+  background-color: var(--background-light);
+  color: var(--text-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.related-posts-section {
+  margin-top: 2rem;
+}
+.related-posts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .related-posts-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
 </style>

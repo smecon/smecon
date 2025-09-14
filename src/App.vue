@@ -2,11 +2,9 @@
   <div id="app-container">
     <Navbar />
     <main class="main-content">
-      
       <router-view />
     </main>
     <Footer />
-    
     <SearchModal />
   </div>
 </template>
@@ -14,7 +12,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import Navbar from '@/components/layout/Navbar.vue';
-import Footer from '@/components/layout/Footer.vue';
+import Footer from '@/components/layout/Footer.vue'; 
 import SearchModal from '@/components/search/SearchModal.vue';
 import { useSearch } from '@/composables/useSearch';
 import { adSlots } from '@/adConfig.js';
@@ -23,8 +21,9 @@ useSearch();
 
 const showFloatingAd = async () => {
   try {
-    const adModule = await import(`@/ads-content/floating.html?raw`);
-    const adCode = adModule.default;
+    const response = await fetch('/ads-content/floating.html');
+    if (!response.ok) return;
+    const adCode = await response.text();
 
     if (!adCode || adCode.trim() === '') {
       return;
@@ -47,7 +46,9 @@ const showFloatingAd = async () => {
     const scriptElements = adContainer.querySelectorAll('script');
     scriptElements.forEach(oldScript => {
       const newScript = document.createElement('script');
-      Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+      Array.from(oldScript.attributes).forEach(attr => {
+        newScript.setAttribute(attr.name, attr.value);
+      });
       if (oldScript.innerHTML) {
         newScript.innerHTML = oldScript.innerHTML;
       }
@@ -85,7 +86,11 @@ const showFloatingAd = async () => {
 
 onMounted(() => {
   if (!import.meta.env.SSR && adSlots.floating.enabled) {
-    showFloatingAd();
+    if (document.readyState === 'complete') {
+      showFloatingAd();
+    } else {
+      window.addEventListener('load', showFloatingAd, { once: true });
+    }
   }
 });
 </script>

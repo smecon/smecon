@@ -2,11 +2,17 @@
   <aside class="blog-sidebar">
     <div v-if="popularPosts.length > 0" class="sidebar-widget">
       <h3 class="widget-title">Popular Posts</h3>
-      <ul class="post-list">
+      <ul class="post-list-detailed">
         <li v-for="post in popularPosts" :key="post.slug">
-          <router-link :to="`/${post.slug}`">
-            <span class="post-title">{{ post.term || post.title }}</span>
-            <span class="post-category">{{ post.category }}</span>
+          <router-link :to="`/${post.slug}`" class="post-link">
+            <div class="post-image-wrapper">
+              <img v-if="post.imageUrl" :src="post.imageUrl" :alt="post.term" class="post-image" loading="lazy" width="80" height="80">
+              <div v-else class="image-placeholder"></div>
+            </div>
+            <div class="post-details">
+              <span class="post-title">{{ post.term || post.title }}</span>
+              <span class="post-category">{{ post.category }}</span>
+            </div>
           </router-link>
         </li>
       </ul>
@@ -16,11 +22,17 @@
 
     <div v-if="recentPosts.length > 0" class="sidebar-widget">
       <h3 class="widget-title">Recent Posts</h3>
-      <ul class="post-list">
+      <ul class="post-list-detailed">
         <li v-for="post in recentPosts" :key="post.slug">
-          <router-link :to="`/${post.slug}`">
-            <span class="post-title">{{ post.term || post.title }}</span>
-            <span class="post-date">{{ formatDate(post.date) }}</span>
+          <router-link :to="`/${post.slug}`" class="post-link">
+            <div class="post-image-wrapper">
+              <img v-if="post.imageUrl" :src="post.imageUrl" :alt="post.term" class="post-image" loading="lazy" width="80" height="80">
+              <div v-else class="image-placeholder"></div>
+            </div>
+            <div class="post-details">
+              <span class="post-title">{{ post.term || post.title }}</span>
+              <span class="post-date">{{ formatDate(post.date) }}</span>
+            </div>
           </router-link>
         </li>
       </ul>
@@ -100,7 +112,7 @@ const formatDate = (dateString) => {
 .blog-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.5rem;
 }
 .sidebar-widget {
   background-color: var(--card-background);
@@ -109,35 +121,56 @@ const formatDate = (dateString) => {
   border: 1px solid var(--border-color);
 }
 .widget-title {
-  margin: 0 0 1rem 0;
-  padding-bottom: 0.75rem;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-color);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
-.post-list, .category-list {
+.post-list-detailed, .category-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-.post-list li {
+.post-list-detailed li {
   margin-bottom: 1rem;
 }
-.post-list li:last-child {
+.post-list-detailed li:last-child {
   margin-bottom: 0;
 }
-.post-list a {
+.post-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   text-decoration: none;
-  color: var(--text-primary);
-  display: block;
 }
-.post-list a:hover .post-title {
-  color: var(--primary-color);
+.post-image-wrapper {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--border-color);
+}
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.post-details {
+  display: flex;
+  flex-direction: column;
 }
 .post-title {
   font-weight: 600;
-  display: block;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
+  line-height: 1.4;
   transition: color 0.2s ease;
+}
+.post-link:hover .post-title {
+  color: var(--primary-color);
 }
 .post-category, .post-date {
   font-size: 0.85rem;
@@ -146,7 +179,7 @@ const formatDate = (dateString) => {
 .category-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 .category-list a {
   text-decoration: none;
@@ -156,6 +189,7 @@ const formatDate = (dateString) => {
   border-radius: 20px;
   display: inline-block;
   font-size: 0.9rem;
+  font-weight: 500;
   transition: all 0.2s ease;
 }
 .category-list a:hover {

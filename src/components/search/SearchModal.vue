@@ -9,6 +9,7 @@
             type="text" 
             placeholder="Search articles..."
             v-model="searchTerm"
+            @input="performSearch"
             ref="searchInput"
           >
           <button class="close-button" @click="closeSearch" aria-label="Close Search">Esc</button>
@@ -19,14 +20,14 @@
           <div v-else-if="searchResults.length > 0">
             <ul class="results-list">
               <li v-for="post in searchResults" :key="post.slug">
-                <router-link :to="`/blog/${post.slug}`" @click="closeSearch">
+                <router-link :to="`/${post.slug}`" @click="closeSearch">
                   <span class="result-title">{{ post.term }}</span>
                   <span class="result-summary">{{ post.summary }}</span>
                 </router-link>
               </li>
             </ul>
           </div>
-          <div v-else-if="searchTerm.length >= 2" class="state-message">
+          <div v-else-if="searchTerm.length >= 2 && !isLoading" class="state-message">
             No results found for "{{ searchTerm }}".
           </div>
           <div v-else class="state-message">
@@ -40,16 +41,15 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onUnmounted } from 'vue';
 import { useSearch } from '@/composables/useSearch';
 
-const { isSearchOpen, searchTerm, isLoading, searchResults, closeSearch } = useSearch();
+const { isSearchOpen, searchTerm, isLoading, searchResults, performSearch, closeSearch } = useSearch();
 const searchInput = ref(null);
 
 watch(isSearchOpen, (isOpen) => {
   if (isOpen) {
     document.body.classList.add('no-scroll');
-    // Fokus ke input saat modal terbuka
     setTimeout(() => {
       searchInput.value?.focus();
     }, 100);
@@ -58,11 +58,16 @@ watch(isSearchOpen, (isOpen) => {
   }
 });
 
-// Menambahkan event listener untuk tombol Escape
-window.addEventListener('keydown', (e) => {
+const handleKeydown = (e) => {
   if (e.key === 'Escape' && isSearchOpen.value) {
     closeSearch();
   }
+};
+
+window.addEventListener('keydown', handleKeydown);
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown);
 });
 </script>
 

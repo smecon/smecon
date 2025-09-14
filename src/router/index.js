@@ -1,7 +1,11 @@
-// File: src/router/index.js
-
-import { createRouter, createWebHistory } from 'vue-router'
-import BlogIndexView from '@/views/BlogIndexView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import BlogIndexView from '@/views/BlogIndexView.vue';
+import CategoryIndexView from '@/views/CategoryIndexView.vue';
+import AboutView from '@/views/AboutView.vue';
+import ContactView from '@/views/ContactView.vue';
+import PrivacyPolicyView from '@/views/PrivacyPolicyView.vue';
+import TermsOfServiceView from '@/views/TermsOfServiceView.vue';
+import ArticleView from '@/views/ArticleView.vue';
 
 const routes = [
   {
@@ -12,51 +16,48 @@ const routes = [
   {
     path: '/categories',
     name: 'categories',
-    component: () => import('@/views/CategoryIndexView.vue')
+    component: CategoryIndexView
   },
   {
     path: '/category/:categorySlug',
     name: 'category',
-    component: () => import('@/views/BlogIndexView.vue'),
+    component: BlogIndexView,
     props: true
   },
   {
     path: '/about',
     name: 'about',
-    component: () => import('@/views/AboutView.vue')
+    component: AboutView
   },
   {
     path: '/contact',
     name: 'contact',
-    component: () => import('@/views/ContactView.vue')
+    component: ContactView
   },
   {
     path: '/privacy-policy',
     name: 'privacy-policy',
-    component: () => import('@/views/PrivacyPolicyView.vue')
+    component: PrivacyPolicyView
   },
   {
     path: '/terms-of-service',
     name: 'terms-of-service',
-    component: () => import('@/views/TermsOfServiceView.vue')
+    component: TermsOfServiceView
   },
   {
     path: '/:slug',
     name: 'post',
-    component: () => import('@/views/ArticleView.vue'),
+    component: ArticleView,
     props: true
   }
-]
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  // --- TAMBAHKAN BLOK KODE INI UNTUK MEMPERBAIKI MASALAH SCROLL ---
   scrollBehavior(to, from, savedPosition) {
-    // Selalu gulir ke atas halaman saat navigasi baru
     return { top: 0 }
   }
-  // -----------------------------------------------------------
-})
+});
 
-export default router
+export default router;

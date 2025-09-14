@@ -16,6 +16,7 @@ const htmlContent = ref('');
 const adContainer = ref(null);
 
 const executeScriptsInContainer = (container) => {
+  if (!container) return;
   const scriptElements = container.querySelectorAll('script');
   scriptElements.forEach(oldScript => {
     const newScript = document.createElement('script');
@@ -30,30 +31,31 @@ const executeScriptsInContainer = (container) => {
 };
 
 onMounted(async () => {
-  try {
-    const adModule = await import(`../../ads-content/${props.slotName}.html?raw`);
-    const rawContent = adModule.default;
+  if (import.meta.env.SSR) return;
 
-    // Hanya render jika file tidak kosong
+  try {
+    const response = await fetch(`/ads-content/${props.slotName}.html`);
+    if (!response.ok) {
+      return;
+    }
+    const rawContent = await response.text();
+
     if (rawContent && rawContent.trim() !== '') {
       htmlContent.value = rawContent;
       await nextTick();
-      if (adContainer.value) {
-        executeScriptsInContainer(adContainer.value);
-      }
+      executeScriptsInContainer(adContainer.value);
     }
   } catch (error) {
-    // Ini normal jika file tidak ada atau kosong, jadi kita tidak perlu log error
   }
 });
 </script>
 
 <style scoped>
 .ad-renderer-wrapper {
-  /* Style ini akan berlaku untuk div pembungkus */
   margin: 2rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  line-height: 0;
 }
 </style>
